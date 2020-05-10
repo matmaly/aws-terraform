@@ -8,5 +8,6 @@ module "network" {
 
 module "compute" {
   source 	     = "./compute"
-  public_subnet_id = module.network.public_subnet_tf
+  public_subnet_id   = module.network.public_subnet_tf
+  public_sq_id       = module.network.public_sq_id
 }

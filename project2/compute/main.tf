@@ -20,6 +20,7 @@ resource "aws_instance" "application_server" {
   key_name      	      = aws_key_pair.application_server.key_name
   subnet_id 		      = var.public_subnet_id
   associate_public_ip_address = true
+  vpc_security_group_ids      = [var.public_sq_id]
   tags = {
     Name = "Application Server_tf"
   }
