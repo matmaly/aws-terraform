@@ -78,3 +78,28 @@ resource "aws_security_group" "public_security_group_tf" {
   }
 }
 
+resource "aws_security_group" "private_security_group_tf" {
+  name   = "private_sg_tf"
+  vpc_id = aws_vpc.vpc_tf.id
+  
+  #SSH
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.public_subnet_cidr]
+  }
+  #MySQL port
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [var.public_subnet_cidr]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
