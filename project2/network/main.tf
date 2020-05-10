@@ -14,6 +14,9 @@ resource "aws_internet_gateway" "internet_gateway_tf" {
   depends_on = [
     aws_vpc.vpc_tf
   ]
+  tags = {
+    Name = "ig_tf"
+  }
 }
 
 resource "aws_subnet" "public_subnet_tf" {
