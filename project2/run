@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import os
+from Crypto.PublicKey import RSA
+import subprocess
+
+keys_path = "./keys"
+
+# Check if terraform show returns anything
+terr_show = subprocess.run(["terraform", "show"], stdout=subprocess.PIPE, text=True)
+
+# Make the key
+def key_generator():
+    key = RSA.generate(2048)
+    with open("./keys/private_key", "wb") as f:
+        os.chmod("./keys/private_key", 0o600)
+        f.write(key.exportKey("PEM"))
+    pubkey = key.publickey()
+    with open ("./keys/public_key.pub", "wb") as f:
+        f.write(pubkey.exportKey("OpenSSH"))
+
+# Check if keys path exists, if not, create it
+if os.path.exists(keys_path):
+    key_generator()
+else:
+    os.mkdir(keys_path)
+    key_generator()
+
