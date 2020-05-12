@@ -37,8 +37,19 @@ if len(terr_show.stdout) > 20:
     print(terr_show.stdout)
 else:
     check_keys()
+    print("Please Wait, making terraform plan")
     terr_plan = subprocess.run(["terraform", "plan", "-out=tfplan"], stdout=subprocess.PIPE, text=True)
     print(terr_plan.stdout)
+    while True:
+        command = input("type 'yes' to apply terraform plan\ntype 'no' to exit\n")
+        if command == "yes":
+            terr_apply = subprocess.run(["terraform", "apply", "tfplan"], stdout=subprocess.PIPE, text=True)
+            print(terr_apply.stdout)
+            break
+        elif command == "no":
+            break
+        else:
+            pass
 
 
 
