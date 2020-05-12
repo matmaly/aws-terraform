@@ -8,7 +8,7 @@ keys_path = "./keys"
 
 # Make the key
 def key_generator(key_name):
-    key = RSA.generate(2048)
+        key = RSA.generate(2048)
     with open(f"./keys/private_key_{key_name}", "wb") as f:
         os.chmod(f"./keys/private_key_{key_name}", 0o600)
         f.write(key.exportKey("PEM"))
@@ -18,11 +18,14 @@ def key_generator(key_name):
 
 # Check if keys path exists, if not, create it
 def check_keys():
+    print("Checking Whether './keys' path exists")
     if os.path.exists(keys_path):
+        print("Creating public and private keys")
         key_generator("database")
         key_generator("application")
     else:
         os.mkdir(keys_path)
+        print("Creating public and private keys")
         key_generator("database")
         key_generator("application")
 
@@ -40,9 +43,12 @@ else:
     print("Please Wait, making terraform plan")
     terr_plan = subprocess.run(["terraform", "plan", "-out=tfplan"], stdout=subprocess.PIPE, text=True)
     print(terr_plan.stdout)
+
+    # While loops which waits for the user input of yes or no whether to apply the plan
     while True:
         command = input("type 'yes' to apply terraform plan\ntype 'no' to exit\n")
         if command == "yes":
+            print("Applying terraform, please wait")
             terr_apply = subprocess.run(["terraform", "apply", "tfplan"], stdout=subprocess.PIPE, text=True)
             print(terr_apply.stdout)
             break
