@@ -6,9 +6,6 @@ import subprocess
 
 keys_path = "./keys"
 
-# Check if terraform show returns anything
-terr_show = subprocess.run(["terraform", "show"], stdout=subprocess.PIPE, text=True)
-
 # Make the key
 def key_generator(key_name):
     key = RSA.generate(2048)
@@ -20,11 +17,29 @@ def key_generator(key_name):
         f.write(pubkey.exportKey("OpenSSH"))
 
 # Check if keys path exists, if not, create it
-if os.path.exists(keys_path):
-    key_generator("database")
-    key_generator("application")
+def check_keys():
+    if os.path.exists(keys_path):
+        key_generator("database")
+        key_generator("application")
+    else:
+        os.mkdir(keys_path)
+        key_generator("database")
+        key_generator("application")
+
+# Check if terraform show returns anything
+terr_show = subprocess.run(["terraform", "show"], stdout=subprocess.PIPE, text=True)
+
+print(len(terr_show.stdout))
+
+# If terr_shows doesn't return anythin, run terraform plan and save as tfplan
+if len(terr_show.stdout) > 20:
+    print("Terraform plan already applied!")
+    print(terr_show.stdout)
 else:
-    os.mkdir(keys_path)
-    key_generator("database")
-    key_generator("application")
+    check_keys()
+    terr_plan = subprocess.run(["terraform", "plan", "-out=tfplan"], stdout=subprocess.PIPE, text=True)
+    print(terr_plan.stdout)
+
+
+
 
