@@ -10,19 +10,21 @@ keys_path = "./keys"
 terr_show = subprocess.run(["terraform", "show"], stdout=subprocess.PIPE, text=True)
 
 # Make the key
-def key_generator():
+def key_generator(key_name):
     key = RSA.generate(2048)
-    with open("./keys/private_key", "wb") as f:
-        os.chmod("./keys/private_key", 0o600)
+    with open(f"./keys/private_key_{key_name}", "wb") as f:
+        os.chmod(f"./keys/private_key_{key_name}", 0o600)
         f.write(key.exportKey("PEM"))
     pubkey = key.publickey()
-    with open ("./keys/public_key.pub", "wb") as f:
+    with open (f"./keys/public_key.pub_{key_name}", "wb") as f:
         f.write(pubkey.exportKey("OpenSSH"))
 
 # Check if keys path exists, if not, create it
 if os.path.exists(keys_path):
-    key_generator()
+    key_generator("database")
+    key_generator("application")
 else:
     os.mkdir(keys_path)
-    key_generator()
+    key_generator("database")
+    key_generator("application")
 
