@@ -30,13 +30,13 @@ resource "aws_instance" "application_server" {
     Name = "Application Server_tf"
   }
   provisioner "file" {
-    source      = "/home/ubuntu/terraform/aws/keys/database_server_key"
+    source      = "./keys/database_key"
     destination = "/home/ubuntu/"
     connection {
     type        = "ssh"
     user        = "ubuntu"
     host        = aws_instance.application_server.public_ip
-    private_key = file("~/terraform/aws/keys/application_server_key")
+    private_key = file("./keys/application_key")
     }
   }
 }
